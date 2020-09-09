@@ -4,7 +4,7 @@
 
 #### 1.类加载器
 
-![image-20200906154007269](/Users/hexin/Library/Application Support/typora-user-images/image-20200906154007269.png)
+![image-20200906154007269](JVM.assets/image-20200906154007269.png)
 
 ​	我们写的java代码都是以.java结尾的java源代码，这部分代码是存放在磁盘中的，他里面存储着程序要执行的逻辑，要想使用这段代码，首先必须通过javac编译器编译成字节码文件，字节码文件也是存储在磁盘中的。字节码文件存放着需执行指令的二进制信息。要想使用class文件，第一步是必须加载要内存中。一个类的生命周期就是从类的加载、连接、初始化开始的。
 
@@ -14,7 +14,7 @@
 
 ​	当java程序中需要使用到某个类时，虚拟机会保证这个类已经被加载，连接和初始化，而连接又包括验证、准备和解析这三个子过程，这个过程必须严格的按照顺序执行。所以有时也把这个3个步骤统称为类加载或类初始化。
 
-![image-20200906163315390](/Users/hexin/Library/Application Support/typora-user-images/image-20200906163315390.png)
+![image-20200906163315390](JVM.assets/image-20200906163315390.png)
 
 ##### 2.1类的加载
 
@@ -54,7 +54,7 @@
 
 #### 4.双亲委派机制
 
-![image-20200906163436291](/Users/hexin/Library/Application Support/typora-user-images/image-20200906163436291.png)
+![image-20200906163436291](JVM.assets/image-20200906163436291.png)
 
 双亲委派机制工作过程：
 
@@ -68,7 +68,7 @@
 
 #### 5.类的生命周期（简化版）
 
-​	![image-20200906163748077](/Users/hexin/Library/Application Support/typora-user-images/image-20200906163748077.png)
+​	![image-20200906163748077](JVM.assets/image-20200906163748077.png)
 
 - 加载，查找并加载类的二进制数据，在Java堆中也创建一个java.lang.Class类的对象
 - 连接，连接又包含三块内容：验证、准备、初始化。 1）验证，文件格式、元数据、字节码、符号引用验证； 2）准备，为类的静态变量分配内存，并将其初始化为默认值； 3）解析，把类中的符号引用转换为直接引用

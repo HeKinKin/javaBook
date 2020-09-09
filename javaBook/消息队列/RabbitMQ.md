@@ -4,7 +4,7 @@
 
 ## RabbitMQ工作模型
 
-![image-20200907122805846](/Users/hexin/Library/Application Support/typora-user-images/image-20200907122805846.png)
+![image-20200907122805846](\RabbitMQ.assets\image-20200907122805846.png)
 
 交换机不是独立运行的服务，不会存储消息，可以理解为地址清单，我们发送的消息会携带一个标志，会根据交换机跟队列的绑定关系 ，决定路由到哪个队列上去。
 
@@ -22,7 +22,7 @@ VHost 虚拟主机：提高资源利用率&命名冲突
 
 ##### 1.直连类型交换机
 
-![image-20200907124849569](/Users/hexin/Library/Application Support/typora-user-images/image-20200907124849569.png)
+![image-20200909113448603](RabbitMQ.assets\image-20200909113448603.png)
 
 
 
@@ -30,11 +30,11 @@ VHost 虚拟主机：提高资源利用率&命名冲突
 
 ​	特点:队列跟交换机绑定的时候，绑定键可以带通配符。路由键只要符合了通配符的规则，就可以路由到相应的队列
 
-![image-20200907125802870](/Users/hexin/Library/Application Support/typora-user-images/image-20200907125802870.png)
+![image-20200907125802870](RabbitMQ.assets/image-20200907125802870.png)
 
 ##### 3.广播类型交换机
 
-![image-20200907130159887](/Users/hexin/Library/Application Support/typora-user-images/image-20200907130159887.png)
+![image-20200907130159887](RabbitMQ.assets/image-20200907130159887.png)
 
 ##### 4.如何选择交换机？
 

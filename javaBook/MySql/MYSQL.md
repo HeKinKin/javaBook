@@ -2,7 +2,7 @@
 
 #### 描述一条语句的执行流程？
 
-![image-20200907223753898](/Users/hexin/Library/Application Support/typora-user-images/image-20200907223753898.png)
+![image-20200909113734932](MYSQL.assets/image-20200909113734932.png)
 
 
 
@@ -22,7 +22,9 @@ max_connections. default 151. 最大10万个
 
 mysql缓存默认关闭
 
-![image-20200907220952702](/Users/hexin/Library/Application Support/typora-user-images/image-20200907220952702.png)
+![image-20200909114004355](MYSQL.assets/image-20200909114004355.png)
+
+
 
 
 
@@ -32,7 +34,7 @@ mysql缓存默认关闭
 
 解析树
 
-![image-20200907221314256](/Users/hexin/Library/Application Support/typora-user-images/image-20200907221314256.png)
+![image-20200909114015303](MYSQL.assets/image-20200909114015303.png)
 
 ##### 预处理器
 
@@ -98,7 +100,7 @@ Buffer Pool：提升读写性能的关键。占服务器大小的百分之80（2
 
 ​			客户端写数据并不会直接写进磁盘，而是先存入Buffer Pool
 
-![image-20200907232925416](/Users/hexin/Library/Application Support/typora-user-images/image-20200907232925416.png)
+![image-20200909114023941](MYSQL.assets/image-20200909114023941.png)
 
 、
 
@@ -170,7 +172,7 @@ DDL DML 逻辑日志（记录的是语句）
 
 2.数据恢复：因为不会出现数据覆盖
 
-![image-20200907234751620](/Users/hexin/Library/Application Support/typora-user-images/image-20200907234751620.png)
+![image-20200909114031876](MYSQL.assets/image-20200909114031876.png)
 
 
 
@@ -184,7 +186,7 @@ binlog特性：
 
 4.用于数据恢复和主从复制
 
-![image-20200907235213086](/Users/hexin/Library/Application Support/typora-user-images/image-20200907235213086.png)
+![image-20200909114040666](MYSQL.assets/image-20200909114040666.png)
 
 
 
@@ -192,7 +194,7 @@ binlog特性：
 
 ## My Sql索引
 
-![image-20200906215141758](/Users/hexin/Library/Application Support/typora-user-images/image-20200906215141758.png)
+![image-20200909114049075](MYSQL.assets/image-20200909114049075.png)
 
 数据库索引，是一种排序的数据结构，以协助快速查询、更新数据库表中的数据。类似于书的目录。
 
@@ -212,7 +214,7 @@ binlog特性：
 
 #### 二叉查找树 Binary Search Tree
 
-![image-20200906220612783](/Users/hexin/Library/Application Support/typora-user-images/image-20200906220612783.png)
+![image-20200909114057910](MYSQL.assets/image-20200909114057910.png)
 
 缺点：可能会变成单链表
 
@@ -220,13 +222,13 @@ binlog特性：
 
 #### AVL树 平衡二叉查找树
 
-![image-20200906221030583](/Users/hexin/Library/Application Support/typora-user-images/image-20200906221030583.png)
+![image-20200909114105866](MYSQL.assets/image-20200909114105866.png)
 
-![image-20200906221239946](/Users/hexin/Library/Application Support/typora-user-images/image-20200906221239946.png)
+![image-20200909114114144](MYSQL.assets/image-20200909114114144.png)
 
-![image-20200906221251425](/Users/hexin/Library/Application Support/typora-user-images/image-20200906221251425.png)
+![image-20200909114122101](MYSQL.assets/image-20200909114122101.png)
 
-![image-20200906221540434](/Users/hexin/Library/Application Support/typora-user-images/image-20200906221540434.png)
+![image-20200909114129859](MYSQL.assets/image-20200909114129859.png)
 
 索引也是放在磁盘上！
 
@@ -240,7 +242,7 @@ Where id =23 ,会把第一个磁盘块的内容加载到内存，发现不在磁
 
 #### 多路平衡查找树 B Tree
 
-![image-20200906222542190](/Users/hexin/Library/Application Support/typora-user-images/image-20200906222542190.png)
+![image-20200909114138271](MYSQL.assets/image-20200909114138271.png)
 
 分裂&合并
 
@@ -264,7 +266,7 @@ Where id =23 ,会把第一个磁盘块的内容加载到内存，发现不在磁
 
 #### B+Tree
 
-![image-20200906224923187](/Users/hexin/Library/Application Support/typora-user-images/image-20200906224923187.png)
+![image-20200909114146264](MYSQL.assets/image-20200909114146264.png)
 
 
 
@@ -274,7 +276,7 @@ Where id =23 ,会把第一个磁盘块的内容加载到内存，发现不在磁
 
 核心：内节点只存 key和节点引用，没有存磁盘地址，所以内节点可以存更多的key，导致深度进一步降低
 
-![image-20200906225828079](/Users/hexin/Library/Application Support/typora-user-images/image-20200906225828079.png)
+![image-20200909114153426](MYSQL.assets/image-20200909114153426.png)
 
 #### Hash索引
 
@@ -289,7 +291,7 @@ INNODB不能直接创建hash索引
 
 MyISAM 索引和数据是分开放的
 
-![image-20200908235407516](/Users/hexin/Library/Application Support/typora-user-images/image-20200908235407516.png)
+![image-20200909114200425](MYSQL.assets/image-20200909114200425.png)
 
 Innodb里有聚集索引的概念
 
@@ -299,21 +301,21 @@ Innodb里有聚集索引的概念
 
 主键索引就是聚集索引，会决定物理行的顺序，所以不建议用uuid作为主键，不连续
 
-![image-20200908233811099](/Users/hexin/Library/Application Support/typora-user-images/image-20200908233811099.png)
+![image-20200909114208889](MYSQL.assets/image-20200909114208889.png)
 
 聚集索引
 
 红线叫回表
 
-![image-20200908234814372](/Users/hexin/Library/Application Support/typora-user-images/image-20200908234814372.png)
+![image-20200909114216827](MYSQL.assets/image-20200909114216827.png)
 
-![image-20200908235142990](/Users/hexin/Library/Application Support/typora-user-images/image-20200908235142990.png)
+![image-20200909114224146](MYSQL.assets/image-20200909114224146.png)
 
 ### 索引创建和使用原则？
 
 列的离散度
 
-![image-20200909000107270](/Users/hexin/Library/Application Support/typora-user-images/image-20200909000107270.png)
+![image-20200909114230865](MYSQL.assets/image-20200909114230865.png)
 
 手机号的离散度更大，没有一个重复的
 
@@ -321,11 +323,11 @@ Innodb里有聚集索引的概念
 
 
 
-![image-20200909000412322](/Users/hexin/Library/Application Support/typora-user-images/image-20200909000412322.png)
+![image-20200909114237864](MYSQL.assets/image-20200909114237864.png)
 
 必须从索引的第一个字段开始，不能跳过
 
-![image-20200909000930566](/Users/hexin/Library/Application Support/typora-user-images/image-20200909000930566.png)
+![image-20200909114245469](MYSQL.assets/image-20200909114245469.png)
 
 哪几个用到了索引
 
@@ -335,7 +337,7 @@ Innodb里有聚集索引的概念
 
 
 
-![image-20200909001145444](/Users/hexin/Library/Application Support/typora-user-images/image-20200909001145444.png)
+![image-20200909114253656](MYSQL.assets/image-20200909114253656.png)
 
 
 
@@ -343,12 +345,12 @@ Innodb里有聚集索引的概念
 
 
 
-![image-20200909001806263](/Users/hexin/Library/Application Support/typora-user-images/image-20200909001806263.png)
+![image-20200909114303683](MYSQL.assets/image-20200909114303683.png)
 
 1 2 3能用到覆盖索引
 
 
 
-![image-20200909002425623](/Users/hexin/Library/Application Support/typora-user-images/image-20200909002425623.png)
+![image-20200909114310240](MYSQL.assets/image-20200909114310240.png)
 
-![image-20200909002512907](/Users/hexin/Library/Application Support/typora-user-images/image-20200909002512907.png)
+![image-20200909114323394](MYSQL.assets/image-20200909114323394.png)
