@@ -530,3 +530,129 @@ AOP的具体实现比如cglib，javasist，cglib应该算是AOP实现的集大�
 1.事务补偿
 
 2.将每一个线程事务都控制起来，最后来判断结果，如果有一个失败了，全部执行回滚操作，如果全部通过，那么全部执行通过
+
+
+
+## 10.解决SpringBoot中自己new出来的对象不能自动注入对象和属性的问题
+
+
+
+在类上加@Component或者其他注解时，该类会交给spring来管理，自动创建对象，但是如果是自己new出来的对象或者自己类没加注解，但是内部又需要注入其他对象以及需要注入配置文件中的属性时.
+
+实例：
+
+```java
+/**
+ * @ClassName ProcessDataContext
+ * @Description 获取流程清单工厂
+ * @Author HeX
+ * @Date 2020/9/23 16:46
+ * @Version 1.0
+ **/
+@Component
+public class ProcessServiceFactory {
+
+    private static final Map<String, ProcessDataStrategy> map = new HashMap<>();
+
+    static {
+        // 这里采用了new出UnapprovedData对象，所以，在UnapprovedData内部采用@Autowired会得不到对象
+        map.put(ProcessDataEnum.unapproved.getCode(), new UnapprovedData());
+    }
+
+    public static ProcessDataStrategy getProcessStrategy(String processType) {
+        return map.get(processType);
+    }
+}
+```
+
+解决办法：
+
+```java
+@Component
+public class SpringContextHolder implements ApplicationContextAware {
+    
+    private static ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        SpringContextHolder.applicationContext = applicationContext;
+    }
+
+    public static <T> T getBean(String beanName) {
+        assertApplicationContext();
+        return (T) applicationContext.getBean(beanName);
+    }
+    
+    private static void assertApplicationContext() {
+        if (SpringContextHolder.applicationContext == null) {
+            throw new RuntimeException("applicaitonContext属性为null,请检查是否注入了SpringContextHolder!");
+        }
+    }
+}
+```
+
+优化前无法注入：
+
+```java
+@Autowired
+ProcessMapper processMapper
+```
+
+优化后可以注入：
+
+```java
+/**
+ * 因从工厂new出的对象，所以这里采用手动注入
+ */
+@Autowired
+ProcessMapper processMapper = SpringContextHolder.getBean("ProcessMapper");
+```
+
+说明：
+
+简单解释一下工具类为什么能够找到类，是因为在启动spring后，spring会将所有注解过的类加载容器内，并返回 给ApplicationContextAware，在其他注解后的类需要对象时，容器会自动注入，但是自己new的类缺不会被容器注入，此时，自己实现ApplicationContextAware，自己根据类的类型手动获得加载后的bean即可。
+
+解决注入属性问题：
+
+创建一个工具类：
+
+```java
+@Component//注意此时要加注解
+public class GetPropertiesUtil
+{
+private static String properties;
+
+public static Stirng getProperties()
+{    
+    return properties;
+}
+@Value("${properties}")
+public void setProperties(String properties)
+{
+    this.properties = proterties;
+}
+}
+```
+注意两点：1、该工具类要加上注解，否则会像第一种情况；
+
+​         2、内部属性加@Value的地方是set方法上，而且set方法不是statis;
+
+使用举例：
+
+```java
+public MyClass
+{
+    @Value("${properties}")
+    private String properties;
+}
+```
+
+上面类在new MyClass时，xxx属性注入会失败，此时改进一下情况即可：
+
+```java
+
+public MyClass
+{
+    private String properties = GetPropertiesUtil.getProperties();
+}
+```
