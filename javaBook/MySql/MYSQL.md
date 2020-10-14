@@ -1,6 +1,6 @@
 # MYSQL
 
-#### 描述一条语句的执行流程？
+## 1.描述一条语句的执行流程？
 
 ![image-20200909113734932](MYSQL.assets/image-20200909113734932.png)
 
@@ -196,7 +196,7 @@ binlog特性：
 
 
 
-## My Sql索引
+## 2.My Sql索引
 
 ![image-20200909114049075](MYSQL.assets/image-20200909114049075.png)
 
@@ -450,7 +450,7 @@ Innodb里有聚集索引的概念
 
 
 
-## MySql事务和锁机制理解
+## 3.MySql事务和锁机制理解
 
 #### 什么是事务？
 
@@ -792,9 +792,169 @@ select count(1) from table1 where column1 = 1 and column2 = 'foo' and column3 = 
 
 https://tech.meituan.com/2014/06/30/mysql-index.html 
 
-
-
 https://blog.csdn.net/LJFPHP/article/details/89156326
 
 
 
+## 4.MySql语法
+
+
+
+#### 4.1.MySQL中MAX函数与Group By一起使用的注意事项
+
+![image-20201014170426100](MYSQL.assets/image-20201014170426100.png)
+
+如果想找到每个class里面的最大的age，则需要使用group by和max。
+
+如下的sql语句，则输出结果有错误：
+
+![image-20201014170704024](MYSQL.assets/image-20201014170704024.png)
+
+虽然找到的age是最大的age，但是与之匹配的用户信息却不是真实的信息，而是group by分组后的第一条记录的基本信息。
+
+
+
+方法一：
+
+如果我使用以下的语句进行查找，则可以返回真实的结果。
+
+![image-20201014170901173](MYSQL.assets/image-20201014170901173.png)
+
+思路：1.先根据条件将取最大值的字段 降序
+
+​			2.然后group by分组，那么分组后的第一笔数据就是最大的值
+
+方法二：
+
+**select** * **from** test t where t.age = (**select** max(age) **from** test **where t.class = class**) **order** **by** class; 
+
+#### 4.2 group by用法解析
+
+##### 1.group by的常规用法
+
+group by的常规用法是配合聚合函数，利用分组信息进行统计，常见的是配合max等聚合函数筛选数据后分析，以及配合having进行筛选后过滤。
+
+数据：
+
+![image-20201014171254776](MYSQL.assets/image-20201014171254776.png)
+
+- 聚合函数max
+
+select max(user_id),grade from user_info group by grade ;
+
+结果：
+
+![image-20201014171331608](MYSQL.assets/image-20201014171331608.png)
+
+这条sql的含义很明确，将数据按照grade字段分组，查询每组最大的user_id以及当前组内容。注意，这里分组条件是grade，查询的非聚合条件也是grade。这里不产生冲突。
+
+having用法：
+
+select max(user_id),grade from user_info group by grade having grade>'A'
+
+![image-20201014171420594](MYSQL.assets/image-20201014171420594.png)
+
+这条sql与上面例子中的基本相同，不过后面跟了having过滤条件。将grade不满足’>A’的过滤掉了。注意，这里分组条件是grade，查询的非聚合条件也是grade。这里不产生冲突。
+
+##### 2.group by的非常规用法
+
+select max(user_id),id,grade from user_info group by grade
+
+![image-20201014171520136](MYSQL.assets/image-20201014171520136.png)
+
+这条sql的结果就值得讨论了，与上述例子不同的是，查询条件多了id一列。数据按照grade分组后，grade一列是相同的，max(user_id)按照数据进行计算也是唯一的，id一列是如何取值的？看上述的数据结果，
+推论：id是物理内存的第一个匹配项。
+究竟是与不是需要继续探讨。
+
+##### 结论：
+
+- 当group by 与聚合函数配合使用时，功能为分组后计算
+- 当group by 与having配合使用时，功能为分组后过滤
+- 当group by 与聚合函数，同时非聚合字段同时使用时，非聚合字段的取值是第一个匹配到的字段内容，即id小的条目对应的字段内容。
+
+#### 4.3 数据库查询数据的第一条
+
+-  sqlserver
+
+```mysql
+select top 1* from user where name='张三'
+```
+
+在查询的过程中，这里的1表示是取出数据库中的符合条件的第一条数据，如果改成2，则表示前两条，但是后面的*不能漏掉。
+
+- oracle
+
+```mysql
+SELECT
+	* 
+FROM
+	(
+	SELECT
+		t.* 
+	FROM
+		"ECP_ANC_TYPE" t
+		LEFT JOIN "ECP_ANC_TYPE_RANGE" r ON r.ANC_TYPE_OID = t.OID 
+	WHERE
+		r.ANC_TYPE_OID IS NULL 
+	ORDER BY
+		TYPE_ID ASC 
+	) b 
+WHERE
+	ROWNUM =1
+```
+
+思路：先根据条件降序，然后在设置条件ROWNUM = 1
+
+注意：
+
+```mysql
+SELECT
+		t.* 
+	FROM
+		"ECP_ANC_TYPE" t
+		LEFT JOIN "ECP_ANC_TYPE_RANGE" r ON r.ANC_TYPE_OID = t.OID 
+	WHERE
+		r.ANC_TYPE_OID IS NULL AND  ROWNUM =1
+```
+
+该写法为错误写法，需注意
+
+- mysql
+
+  limit 1
+
+#### 4.4 截取特定字符串之前或之后的字段
+
+**substring_index(str,delim,count)**
+
+**str:要处理的字符串**
+
+**delim:分隔符**
+
+**count:计数**
+
+例子：str=[www.wikibt.com](http://www.wikibt.com/)
+
+   substring_index(str,'.',1)
+
+   结果是：www
+
+   substring_index(str,'.',2)
+
+   结果是：www.wikibt
+
+   也就是说，如果count是正数，那么就是从左往右数，第N个分隔符的左边的全部内容
+
+   相反，如果是负数，那么就是从右边开始数，第N个分隔符右边的所有内容，如：
+
+   substring_index(str,'.',-2)
+
+   结果为：wikibt.com
+
+   有人会问，如果我要中间的的wikibt怎么办？
+
+   很简单的，两个方向：
+
+   从右数第二个分隔符的右边全部，再从左数的第一个分隔符的左边：
+
+　substring_index(substring_index(str,'.',-2),'.',1);
